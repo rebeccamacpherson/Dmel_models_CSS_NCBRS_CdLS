@@ -1,0 +1,1573 @@
+###### 	Analysis code for behavioral data ################
+########### Coregulated Genes ###################
+## Written and Last edited by Rebecca MacPherson, 06-22 ##
+
+
+/** SAS CODE **/
+
+/** Sleep and Activity Phenotypes **/
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_daily_locomotor_activity;
+	GETNAMES=YES; GUESSINGROWS=230;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_daily_locomotor_activity; RUN;
+
+
+%web_open_table(WORK.Ind_daily_locomotor_activity);
+/*******************************************************/
+
+
+/********************************************************PARSE OUT DATA*/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('TRiPsc','62872');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model Activity=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model Activity=Line /;
+	/**/
+	by Sex;
+run;
+
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('TRiPsc','66945');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model Activity=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model Activity=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('TRiPsc','80387');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model Activity=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model Activity=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/****************************************/
+
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('TRiPsc','56014');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model Activity=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model Activity=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('TRiPsc','55690');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model Activity=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model Activity=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('TRiPsc','64498');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model Activity=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model Activity=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+
+proc delete data=WORK.Ind_daily_locomotor_activity;
+run;
+
+
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.day_sleep;
+	GETNAMES=YES; GUESSINGROWS=230;
+RUN;
+
+PROC CONTENTS DATA=WORK.day_sleep; RUN;
+
+
+%web_open_table(WORK.day_sleep);
+/*******************************************************/
+
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('TRiPsc','62872');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('TRiPsc','66945');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('TRiPsc','80387');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/*******************************************/
+
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('TRiPsc','56014');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('TRiPsc','55690');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('TRiPsc','64498');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/*********/
+
+
+proc delete data=WORK.day_sleep;
+run;
+
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.night_sleep;
+	GETNAMES=YES; GUESSINGROWS=230;
+RUN;
+
+PROC CONTENTS DATA=WORK.night_sleep; RUN;
+
+
+%web_open_table(WORK.night_sleep);
+/*******************************************************/
+
+/
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('TRiPsc','62872');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('TRiPsc','66945');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('TRiPsc','80387');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('TRiPsc','56014');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/***********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('TRiPsc','55690');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('TRiPsc','64498');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model mean_sleep_per_ind=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/*********/
+
+
+proc delete data=WORK.night_sleep;
+run;
+
+
+
+
+
+
+/*******************************IMPORT*/
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_sleep_bout_counts_day;
+	GETNAMES=YES; GUESSINGROWS=230;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_sleep_bout_counts_day; RUN;
+
+
+%web_open_table(WORK.Ind_sleep_bout_counts_day);
+/*******************************************************/
+
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('TRiPsc','62872');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/*********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('TRiPsc','66945');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('TRiPsc','80387');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('TRiPsc','56014');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('TRiPsc','55690');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('TRiPsc','64498');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+
+
+proc delete data=Work.Ind_sleep_bout_counts_day;
+run;
+
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_sleep_bout_counts_night;
+	GETNAMES=YES; GUESSINGROWS=230;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_sleep_bout_counts_night; RUN;
+
+
+%web_open_table(WORK.Ind_sleep_bout_counts_night);
+/*************************************************************************************************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('TRiPsc','62872');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+
+
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('TRiPsc','66945');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('TRiPsc','80387');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+/***********************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('TRiPsc','56014');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('TRiPsc','55690');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+/***********************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('TRiPsc','64498');
+
+RUN;
+
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex  ;
+	model bout_count=Line Sex Line*Sex /;
+	/**/
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line  ;
+	model bout_count=Line /;
+	/**/
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+proc delete data=Work.Ind_sleep_bout_counts_night;
+run;
+
+
+
+
+
+/** Startle Response **/
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.startle;
+	GETNAMES=YES;
+	GUESSINGROWS=102;
+RUN;
+
+PROC CONTENTS DATA=WORK.startle; RUN;
+
+
+%web_open_table(WORK.startle);
+
+/**PARSE OUT DATA**/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.startle
+where Line IN ('55690','TRIPsc1');
+
+RUN;
+
+/** FULL MODEL **/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex/;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+proc delete data=Work.PARSED;
+
+run;
+
+
+/**PARSE OUT DATA**/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.startle
+where Line IN ('56014','TRIPsc1');
+
+RUN;
+/** FULL MODEL **/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex/;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+proc delete data=Work.PARSED;
+
+run;
+
+
+/**PARSE OUT DATA**/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.startle
+where Line IN ('64498','TRIPsc1');
+
+RUN;
+/** FULL MODEL **/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex/;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+proc delete data=Work.PARSED;
+
+run;
+
+
+/**PARSE OUT DATA**/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.startle
+where Line IN ('66945','TRIPsc2');
+
+RUN;
+/** FULL MODEL **/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex/;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+proc delete data=Work.PARSED;
+
+run;
+
+
+/**PARSE OUT DATA**/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.startle
+where Line IN ('80387','TRIPsc2');
+
+RUN;
+/** FULL MODEL **/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex/;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+proc delete data=Work.PARSED;
+
+run;
+
+
+/**PARSE OUT DATA**/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.startle
+where Line IN ('62872','TRIPsc2');
+
+RUN;
+/** FULL MODEL **/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex/;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+proc delete data=Work.PARSED;
+
+run;
+
+
+##################### R code for Tapping behavior #########################
+###################### Fisher's Exact Tests ###############################
+
+
+setwd("path/to/file")
+
+
+gene <- read.csv("Startle.csv", header=TRUE)
+
+#####Females, Batch 1
+#if no tapping was observed, then no Fisher's exact test was performed.
+
+tapping<-
+  matrix(c(0, 6, 50, 44),
+         nrow = 2,
+         dimnames = list(Line = c("Control","55690"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 7, 50, 43),
+         nrow = 2,
+         dimnames = list(Line = c("Control","64498"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+#####Males, Batch 1
+
+tapping<-
+  matrix(c(2, 20, 47, 29),
+         nrow = 2,
+         dimnames = list(Line = c("Control","55690"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+tapping<-
+  matrix(c(2, 4, 47, 46),
+         nrow = 2,
+         dimnames = list(Line = c("Control","56014"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+
+#####Females, Batch 2
+
+
+tapping<-
+  matrix(c(0, 3, 50, 47),
+         nrow = 2,
+         dimnames = list(Line = c("Control","62872"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+tapping<-
+  matrix(c(0, 3, 50, 47),
+         nrow = 2,
+         dimnames = list(Line = c("Control","80387"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+
+#####Males, Batch 2
+
+tapping<-
+  matrix(c(0, 3, 50, 47),
+         nrow = 2,
+         dimnames = list(Line = c("Control","62872"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+tapping<-
+  matrix(c(0, 4, 50, 46),
+         nrow = 2,
+         dimnames = list(Line = c("Control","80387"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+
+
+

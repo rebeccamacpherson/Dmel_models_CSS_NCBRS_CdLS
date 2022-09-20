@@ -1,0 +1,13 @@
+Line,Gene,Sex
+32372,Snr1,F
+32372,Snr1,M
+55690,CG5877,F
+55690,CG5877,M
+64498,odc1,F
+64498,odc1,M
+55690-32372,Mal-A4_Snr1,F
+55690-32372,Mal-A4_Snr1,M
+64498-32372,odc1_Snr1,F
+64498-32372,odc1_Snr1,M
+Control,Control,F
+Control,Control,M

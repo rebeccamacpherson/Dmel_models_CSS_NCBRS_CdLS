@@ -1,0 +1,615 @@
+############### Analysis code for behavioral data ################
+########### Epistasis - Behavioral Experiments ###################
+## Written and Last edited by Rebecca MacPherson, 06-22 ##
+
+
+/** SAS CODE **/
+
+
+
+/* ANOVAs double RNAi - Startle Response */
+
+/***********************Import Data******************************************/
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	OUT=WORK.startle;
+	GETNAMES=YES;
+	GUESSINGROWS=450;
+RUN;
+
+PROC CONTENTS DATA=WORK.startle; RUN;
+
+
+%web_open_table(WORK.startle);
+
+/***************************Run Models**********************************************/
+
+/*************55690*************/
+
+PROC SQL; 
+CREATE TABLE WORK.startle55690 AS
+Select *
+from WORK.startle
+where Line IN ('55690','55690-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.startle55690 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model Time=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.startle55690 out=Work.TempDataSorted55690;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted55690 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model Time=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted55690;
+run;
+
+proc delete data=Work.startle55690;
+run;
+
+
+
+/*************64498*************/
+
+PROC SQL; 
+CREATE TABLE WORK.startle64498 AS
+Select *
+from WORK.startle
+where Line IN ('64498','64498-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.startle64498 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model Time=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.startle64498 out=Work.TempDataSorted64498;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted64498 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model Time=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted64498;
+run;
+
+proc delete data=Work.startle64498;
+run;
+
+
+
+
+/* ANOVAS  double RNAi project - Sleep and Activity Phenotypes*/
+
+/***********************Import Data - Total Locomotor Activity******************************************/
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	REPLACE
+	OUT=WORK.Ind_daily_locomotor_activity;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_daily_locomotor_activity; RUN;
+
+
+%web_open_table(WORK.Ind_daily_locomotor_activity);
+
+
+/*************55690*************/
+
+PROC SQL; 
+CREATE TABLE WORK.IDLA_55690 AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('55690','55690-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.IDLA_55690 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model Activity=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.IDLA_55690 out=Work.TempDataSorted55690;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted55690 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model Activity=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted55690;
+run;
+
+proc delete data=Work.IDLA_55690;
+run;
+
+/*************64498*************/
+
+PROC SQL; 
+CREATE TABLE WORK.IDLA_64498 AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('64498','64498-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.IDLA_64498 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model Activity=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.IDLA_64498 out=Work.TempDataSorted64498;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted64498 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model Activity=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted64498;
+run;
+
+proc delete data=Work.IDLA_64498;
+run;
+
+
+/***********************Import Data - DAY SLEEP*****************************************/
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	REPLACE
+	OUT=WORK.day_sleep;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.day_sleep; RUN;
+
+
+%web_open_table(WORK.day_sleep);
+
+
+/*************55690*************/
+
+PROC SQL; 
+CREATE TABLE WORK.DS_55690 AS
+Select *
+from WORK.day_sleep
+where Line IN ('55690','55690-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.DS_55690 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model mean_sleep_per_ind=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.DS_55690 out=Work.TempDataSorted55690;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted55690 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model mean_sleep_per_ind=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted55690;
+run;
+
+proc delete data=Work.DS_55690;
+run;
+
+/*************64498*************/
+
+PROC SQL; 
+CREATE TABLE WORK.DS_64498 AS
+Select *
+from WORK.day_sleep
+where Line IN ('64498','64498-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.DS_64498 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model mean_sleep_per_ind=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.DS_64498 out=Work.TempDataSorted64498;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted64498 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model mean_sleep_per_ind=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted64498;
+run;
+
+proc delete data=Work.DS_64498;
+run;
+
+
+/***********************Import Data - NIGHT SLEEP******************************************/
+
+FILENAME REFFILE '/path/to/file';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	REPLACE
+	OUT=WORK.night_sleep;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.night_sleep; RUN;
+
+
+%web_open_table(WORK.night_sleep);
+
+/*************55690*************/
+
+PROC SQL; 
+CREATE TABLE WORK.NS_55690 AS
+Select *
+from WORK.night_sleep
+where Line IN ('55690','55690-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.NS_55690 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model mean_sleep_per_ind=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.NS_55690 out=Work.TempDataSorted55690;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted55690 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model mean_sleep_per_ind=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted55690;
+run;
+
+proc delete data=Work.NS_55690;
+run;
+
+/*************64498*************/
+
+PROC SQL; 
+CREATE TABLE WORK.NS_64498 AS
+Select *
+from WORK.night_sleep
+where Line IN ('64498','64498-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.NS_64498 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model mean_sleep_per_ind=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.NS_64498 out=Work.TempDataSorted64498;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted64498 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model mean_sleep_per_ind=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted64498;
+run;
+
+proc delete data=Work.NS_64498;
+run;
+
+
+/***********************Import Data - SLEEP BOUT COUNT DAY ******************************************/
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	REPLACE
+	OUT=WORK.Ind_sleep_bout_counts_day;
+	GETNAMES=YES; GUESSINGROWS=305;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_sleep_bout_counts_day; RUN;
+
+
+%web_open_table(WORK.Ind_sleep_bout_counts_day);
+
+/*************55690*************/
+
+PROC SQL; 
+CREATE TABLE WORK.SBC_D_55690 AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('55690','55690-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.SBC_D_55690 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model Bout_Count=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+
+/**                          REDUCED BY SEX**/
+ods  noproctitle;
+ods  graphics / imagemap=on;
+
+proc sort data=WORK.SBC_D_55690 out=Work.TempDataSorted55690;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted55690 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model Bout_Count=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted55690;
+run;
+
+proc delete data=Work.SBC_D_55690;
+run;
+
+/*************64498*************/
+
+PROC SQL; 
+CREATE TABLE WORK.SBC_D_64498 AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('64498','64498-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.SBC_D_64498 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model Bout_Count=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+
+/**                          REDUCED BY SEX**/
+ods  noproctitle;
+ods  graphics / imagemap=on;
+
+proc sort data=WORK.SBC_D_64498 out=Work.TempDataSorted64498;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted64498 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model Bout_Count=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted64498;
+run;
+
+proc delete data=Work.SBC_D_64498;
+run;
+
+
+
+/***********************Import Data - SLEEP BOUT COUNT NIGHT******************************************/
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	REPLACE
+	OUT=WORK.Ind_sleep_bout_counts_night;
+	GETNAMES=YES; GUESSINGROWS=305;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_sleep_bout_counts_night; RUN;
+
+
+%web_open_table(WORK.Ind_sleep_bout_counts_night);
+
+/********************** SBC_N *********************************/
+
+/*************55690*************/
+
+PROC SQL; 
+CREATE TABLE WORK.SBC_N_55690 AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('55690','55690-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.SBC_N_55690 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model Bout_Count=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.SBC_N_55690 out=Work.TempDataSorted55690;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted55690 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model Bout_Count=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted55690;
+run;
+
+proc delete data=Work.SBC_N_55690;
+run;
+
+/*************64498*************/
+
+PROC SQL; 
+CREATE TABLE WORK.SBC_N_64498 AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('64498','64498-32372','32372','tripsc');
+
+RUN;
+
+
+/**                          Full Model including Sex**/
+
+proc mixed data=WORK.SBC_N_64498 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Genotype1 Genotype2;
+	model Bout_Count=Genotype1 Genotype2 Sex Genotype1*Sex Genotype2*Sex Genotype1*Genotype2 Genotype1*Genotype2*Sex /;
+run;
+
+
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.SBC_N_64498 out=Work.TempDataSorted64498;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted64498 method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Genotype1 Genotype2;
+	model Bout_Count=Genotype1 Genotype2 Genotype1*Genotype2 /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted64498;
+run;
+
+proc delete data=Work.SBC_N_64498;
+run;
+
+
+

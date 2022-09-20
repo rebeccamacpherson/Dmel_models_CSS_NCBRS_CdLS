@@ -1,0 +1,2459 @@
+###### 	Analysis code for behavioral data ################
+########### CSS/NCBRS, CdLS fly models ###################
+## Written and Last edited by Rebecca MacPherson, 06-22 ##
+/** SAS CODE **/
+
+
+/** Startle Response **/
+/** 32372 vs control **/
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	OUT=WORK.S_32372;
+	GETNAMES=YES;
+RUN;
+
+proc mixed data=WORK.S_32372 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+
+/*************************************************************************/
+
+/** 60017 vs control **/
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	OUT=WORK.S_60017;
+	GETNAMES=YES;
+RUN;
+
+proc mixed data=WORK.S_60017 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+
+/*************************************************************************/
+
+/** 35211 vs control **/
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	OUT=WORK.S_35211;
+	GETNAMES=YES;
+RUN;
+
+proc mixed data=WORK.S_35211 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+
+/*************************************************************************/
+
+/** 36786 vs control **/
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	OUT=WORK.S_36786;
+	GETNAMES=YES;
+RUN;
+
+proc mixed data=WORK.S_36786 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+
+/*************************************************************************/
+
+/** 34351 vs control **/
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	OUT=WORK.S_34351;
+	GETNAMES=YES;
+RUN;
+
+proc mixed data=WORK.S_34351 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+
+/*************************************************************************/
+
+
+/** 325447 vs control **/
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	OUT=WORK.S_35447;
+	GETNAMES=YES;
+RUN;
+
+proc mixed data=WORK.S_35447 method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+/*************************************************************************/
+/** 32372 vs control - sexes separately **/
+proc sort data=WORK.S_32372 out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/*************************************************************************/
+/** 60017 vs control - sexes separately **/
+proc sort data=WORK.S_60017 out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/*************************************************************************/
+/** 35211 vs control - sexes separately **/
+proc sort data=WORK.S_35211 out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/*************************************************************************/
+/** 36786 vs control - sexes separately **/
+proc sort data=WORK.S_36786 out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/*************************************************************************/
+/** 34351 vs control - sexes separately **/
+proc sort data=WORK.S_34351 out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/*************************************************************************/
+/** 35447 vs control - sexes separately **/
+proc sort data=WORK.S_35447 out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+
+
+
+
+
+
+/***********************************/
+/** Sleep and Activity Phenotypes **/
+/*First the full model with each gene individually, then the reduced model by sex for each gene*/
+
+/** Number of Sleep Bouts, Nighttime *******************************************/
+/** IMPORT DATA */
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.sleep_bout_count_night;
+	GETNAMES=YES;
+	GUESSINGROWS=35;
+RUN;
+
+PROC CONTENTS DATA=WORK.sleep_bout_count_night; RUN;
+
+
+%web_open_table(WORK.sleep_bout_count_night);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_night
+where Line IN ('Control','32372');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/**********************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_night
+where Line IN ('Control','34351');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_night
+where Line IN ('Control','35211');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_night
+where Line IN ('Control','35447');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_night
+where Line IN ('Control','36786');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_night
+where Line IN ('Control','60017');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+
+/****************************************************************************/
+
+
+/** Number of Sleep Bouts, Day *******************************************/
+/** IMPORT DATA */
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.sleep_bout_count_day;
+	GETNAMES=YES;
+	GUESSINGROWS=35;
+RUN;
+
+PROC CONTENTS DATA=WORK.sleep_bout_count_day; RUN;
+
+
+%web_open_table(WORK.sleep_bout_count_day);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_day
+where Line IN ('Control','32372');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/**********************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_day
+where Line IN ('Control','34351');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_day
+where Line IN ('Control','35211');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_day
+where Line IN ('Control','35447');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_day
+where Line IN ('Control','36786');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.sleep_bout_count_day
+where Line IN ('Control','60017');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model bout_count=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model bout_count=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+
+
+/**********************************************************************/
+
+
+
+/** Proportion of Time Spent Asleep, Night *******************************************/
+/** IMPORT DATA */
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.proportion_asleep__night;
+	GETNAMES=YES;
+	GUESSINGROWS=35;
+RUN;
+
+PROC CONTENTS DATA=WORK.proportion_asleep__night; RUN;
+
+
+%web_open_table(WORK.proportion_asleep__night);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__night
+where Line IN ('Control','32372');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/**********************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__night
+where Line IN ('Control','34351');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__night
+where Line IN ('Control','35211');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__night
+where Line IN ('Control','35447');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__night
+where Line IN ('Control','36786');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__night
+where Line IN ('Control','60017');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+
+/****************************************************************************/
+
+
+/** Proportion of Time Spent Asleep, Day *******************************************/
+/** IMPORT DATA */
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.proportion_asleep__day;
+	GETNAMES=YES;
+	GUESSINGROWS=35;
+RUN;
+
+PROC CONTENTS DATA=WORK.proportion_asleep__day; RUN;
+
+
+%web_open_table(WORK.proportion_asleep__day);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__day
+where Line IN ('Control','32372');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/**********************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__day
+where Line IN ('Control','34351');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__day
+where Line IN ('Control','35211');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__day
+where Line IN ('Control','35447');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__day
+where Line IN ('Control','36786');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.proportion_asleep__day
+where Line IN ('Control','60017');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model mean_sleep_per_ind=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+
+
+/****************************************************************************/
+
+
+/** Total Activity *******************************************/
+/** IMPORT DATA */
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.total_activity;
+	GETNAMES=YES;
+	GUESSINGROWS=35;
+RUN;
+
+PROC CONTENTS DATA=WORK.total_activity; RUN;
+
+
+%web_open_table(WORK.total_activity);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.total_activity
+where Line IN ('Control','32372');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model activity=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model activity=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/**********************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.total_activity
+where Line IN ('Control','34351');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model activity=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model activity=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.total_activity
+where Line IN ('Control','35211');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model activity=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model activity=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.total_activity
+where Line IN ('Control','35447');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model activity=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model activity=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.total_activity
+where Line IN ('Control','36786');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model activity=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model activity=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/****************************************************************************/
+/*  						PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.total_activity
+where Line IN ('Control','60017');
+
+RUN;
+
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex;
+	model activity=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line;
+	model activity=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+
+
+/*******************************************/
+/*** SAS Code for analyzing brain length ***/
+/*******************************************/
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	REPLACE
+	OUT=WORK.alphabeta;
+	GETNAMES=YES; GUESSINGROWS=253;
+RUN;
+
+PROC CONTENTS DATA=WORK.alphabeta; RUN;
+
+
+%web_open_table(WORK.alphabeta);
+
+
+
+FILENAME REFFILE '/path/to/file.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	REPLACE
+	OUT=WORK.ellipsoid;
+	GETNAMES=YES; GUESSINGROWS=150;
+RUN;
+
+PROC CONTENTS DATA=WORK.ellipsoid; RUN;
+
+
+%web_open_table(WORK.alphabeta);
+
+/*** 
+Splits into each line vs the control, and then selects for the brain regions
+***/
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ab AS
+Select *
+	from WORK.alphabeta
+where Line IN ('32372','TRiPsc') AND lobe IN ('alpha','beta');
+
+RUN;
+
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ellipsoid AS
+Select *
+	from WORK.ellipsoid
+where Line IN ('32372','TRiPsc') AND lobe IN ('verellip','horellip');
+
+RUN;
+
+
+ods noproctitle;
+ods graphics / imagemap=on;
+
+
+/*** 
+Splits each subset dataset into each brain region so that a model can be run for each brain region separately
+***/
+
+
+proc sort data=WORK.parsed_ab out=Work.parsed_line_lobe_ab;
+	by lobe;
+run;
+
+proc sort data=WORK.parsed_ellipsoid out=Work.parsed_line_lobe_ell;
+	by lobe;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line sex line*sex  /;
+	by lobe;
+run;
+
+
+proc mixed data=WORK.parsed_line_lobe_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line sex line*sex /;
+	by lobe;
+run;
+
+/***Running Models Sexes Separately***/
+
+proc sort data=WORK.parsed_line_lobe_ab out=Work.parsed_line_lobe_sex_ab;
+	by sex;
+run;
+
+proc sort data=WORK.parsed_line_lobe_ell out=Work.parsed_line_lobe_sex_ell;
+	by sex;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_sex_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line /;
+	by sex lobe;
+	
+run;
+
+
+proc mixed data=Work.parsed_line_lobe_sex_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line /;
+	by sex lobe;
+run;
+
+/***XXXXXXXXXXXXXXXXXXXXXXXXXXX***/
+
+
+
+/*** 
+Splits into each line vs the control, and then selects for the brain regions
+***/
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ab AS
+Select *
+	from WORK.alphabeta
+where Line IN ('34351','TRiPsc') AND lobe IN ('alpha','beta');
+
+RUN;
+
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ellipsoid AS
+Select *
+	from WORK.ellipsoid
+where Line IN ('34351','TRiPsc') AND lobe IN ('verellip','horellip');
+
+RUN;
+
+
+ods noproctitle;
+ods graphics / imagemap=on;
+
+
+/*** 
+Splits each subset dataset into each brain region so that a model can be run for each brain region separately
+***/
+
+
+proc sort data=WORK.parsed_ab out=Work.parsed_line_lobe_ab;
+	by lobe;
+run;
+
+proc sort data=WORK.parsed_ellipsoid out=Work.parsed_line_lobe_ell;
+	by lobe;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line sex line*sex  /;
+	by lobe;
+run;
+
+
+proc mixed data=WORK.parsed_line_lobe_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line sex line*sex /;
+	by lobe;
+run;
+
+/***Running Models Sexes Separately***/
+
+proc sort data=WORK.parsed_line_lobe_ab out=Work.parsed_line_lobe_sex_ab;
+	by sex;
+run;
+
+proc sort data=WORK.parsed_line_lobe_ell out=Work.parsed_line_lobe_sex_ell;
+	by sex;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_sex_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line /;
+	by sex lobe;
+	
+run;
+
+
+proc mixed data=Work.parsed_line_lobe_sex_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line /;
+	by sex lobe;
+run;
+
+/***XXXXXXXXXXXXXXXXXXXXXXXXXXX***/
+
+
+
+/*** 
+Splits into each line vs the control, and then selects for the brain regions
+***/
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ab AS
+Select *
+	from WORK.alphabeta
+where Line IN ('35211','TRiPsc') AND lobe IN ('alpha','beta');
+
+RUN;
+
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ellipsoid AS
+Select *
+	from WORK.ellipsoid
+where Line IN ('35211','TRiPsc') AND lobe IN ('verellip','horellip');
+
+RUN;
+
+
+ods noproctitle;
+ods graphics / imagemap=on;
+
+
+/*** 
+Splits each subset dataset into each brain region so that a model can be run for each brain region separately
+***/
+
+
+proc sort data=WORK.parsed_ab out=Work.parsed_line_lobe_ab;
+	by lobe;
+run;
+
+proc sort data=WORK.parsed_ellipsoid out=Work.parsed_line_lobe_ell;
+	by lobe;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line sex line*sex  /;
+	by lobe;
+run;
+
+
+proc mixed data=WORK.parsed_line_lobe_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line sex line*sex /;
+	by lobe;
+run;
+
+/***Running Models Sexes Separately***/
+
+
+proc sort data=WORK.parsed_line_lobe_ab out=Work.parsed_line_lobe_sex_ab;
+	by sex;
+run;
+
+proc sort data=WORK.parsed_line_lobe_ell out=Work.parsed_line_lobe_sex_ell;
+	by sex;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_sex_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line /;
+	by sex lobe;
+	
+run;
+
+
+proc mixed data=Work.parsed_line_lobe_sex_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line /;
+	by sex lobe;
+run;
+
+/***XXXXXXXXXXXXXXXXXXXXXXXXXXX***/
+
+
+/*** 
+Splits into each line vs the control, and then selects for the brain regions
+***/
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ab AS
+Select *
+	from WORK.alphabeta
+where Line IN ('35447','TRiPsc') AND lobe IN ('alpha','beta');
+
+RUN;
+
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ellipsoid AS
+Select *
+	from WORK.ellipsoid
+where Line IN ('35447','TRiPsc') AND lobe IN ('verellip','horellip');
+
+RUN;
+
+
+ods noproctitle;
+ods graphics / imagemap=on;
+
+
+/*** 
+Splits each subset dataset into each brain region so that a model can be run for each brain region separately
+***/
+
+
+proc sort data=WORK.parsed_ab out=Work.parsed_line_lobe_ab;
+	by lobe;
+run;
+
+proc sort data=WORK.parsed_ellipsoid out=Work.parsed_line_lobe_ell;
+	by lobe;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line sex line*sex  /;
+	by lobe;
+run;
+
+
+proc mixed data=WORK.parsed_line_lobe_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line sex line*sex /;
+	by lobe;
+run;
+
+/***Running Models Sexes Separately***/
+
+
+proc sort data=WORK.parsed_line_lobe_ab out=Work.parsed_line_lobe_sex_ab;
+	by sex;
+run;
+
+proc sort data=WORK.parsed_line_lobe_ell out=Work.parsed_line_lobe_sex_ell;
+	by sex;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_sex_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line /;
+	by sex lobe;
+	
+run;
+
+
+proc mixed data=Work.parsed_line_lobe_sex_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line /;
+	by sex lobe;
+run;
+
+/***XXXXXXXXXXXXXXXXXXXXXXXXXXX***/
+
+
+
+/*** 
+Splits into each line vs the control, and then selects for the brain regions
+***/
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ab AS
+Select *
+	from WORK.alphabeta
+where Line IN ('36786','TRiPsc') AND lobe IN ('alpha','beta');
+
+RUN;
+
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ellipsoid AS
+Select *
+	from WORK.ellipsoid
+where Line IN ('36786','TRiPsc') AND lobe IN ('verellip','horellip');
+
+RUN;
+
+
+ods noproctitle;
+ods graphics / imagemap=on;
+
+
+/*** 
+Splits each subset dataset into each brain region so that a model can be run for each brain region separately
+***/
+
+
+proc sort data=WORK.parsed_ab out=Work.parsed_line_lobe_ab;
+	by lobe;
+run;
+
+proc sort data=WORK.parsed_ellipsoid out=Work.parsed_line_lobe_ell;
+	by lobe;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line sex line*sex  /;
+	by lobe;
+run;
+
+
+proc mixed data=WORK.parsed_line_lobe_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line sex line*sex /;
+	by lobe;
+run;
+
+/***Running Models Sexes Separately***/
+
+
+proc sort data=WORK.parsed_line_lobe_ab out=Work.parsed_line_lobe_sex_ab;
+	by sex;
+run;
+
+proc sort data=WORK.parsed_line_lobe_ell out=Work.parsed_line_lobe_sex_ell;
+	by sex;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_sex_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line /;
+	by sex lobe;
+	
+run;
+
+
+proc mixed data=Work.parsed_line_lobe_sex_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line /;
+	by sex lobe;
+run;
+
+/***XXXXXXXXXXXXXXXXXXXXXXXXXXX***/
+
+
+/*** 
+Splits into each line vs the control, and then selects for the brain regions
+***/
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ab AS
+Select *
+	from WORK.alphabeta
+where Line IN ('60017','TRiPsc') AND lobe IN ('alpha','beta');
+
+RUN;
+
+
+PROC SQL; 
+CREATE TABLE WORK.parsed_ellipsoid AS
+Select *
+	from WORK.ellipsoid
+where Line IN ('60017','TRiPsc') AND lobe IN ('verellip','horellip');
+
+RUN;
+
+
+ods noproctitle;
+ods graphics / imagemap=on;
+
+
+/*** 
+Splits each subset dataset into each brain region so that a model can be run for each brain region separately
+***/
+
+
+proc sort data=WORK.parsed_ab out=Work.parsed_line_lobe_ab;
+	by lobe;
+run;
+
+proc sort data=WORK.parsed_ellipsoid out=Work.parsed_line_lobe_ell;
+	by lobe;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line sex line*sex  /;
+	by lobe;
+run;
+
+
+proc mixed data=WORK.parsed_line_lobe_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line sex line*sex /;
+	by lobe;
+run;
+
+/***Running Models Sexes Separately***/
+
+proc sort data=WORK.parsed_line_lobe_ab out=Work.parsed_line_lobe_sex_ab;
+	by sex;
+run;
+
+proc sort data=WORK.parsed_line_lobe_ell out=Work.parsed_line_lobe_sex_ell;
+	by sex;
+run;
+
+
+
+
+proc mixed data=WORK.parsed_line_lobe_sex_ab method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model avg_norm_length=line /;
+	by sex lobe;
+	
+run;
+
+
+proc mixed data=Work.parsed_line_lobe_sex_ell method=type3 plots=(residualPanel) alpha=0.05;
+	class  line sex;
+	model norm_length=line /;
+	by sex lobe;
+run;
+
+/***XXXXXXXXXXXXXXXXXXXXXXXXXXX***/
+
+
+
+
+
+########################################################################
+######################### R CODE #######################################
+########################################################################
+
+#Tapping behavior (Fishers exact tests) for CSS/NCBRS/CdLS Fly Models
+
+tapping<-
+  matrix(c(0, 11, 50, 39),
+         nrow = 2,
+         dimnames = list(Line = c("Control","32372_Snr1_M"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 5, 50, 45),
+         nrow = 2,
+         dimnames = list(Line = c("Control","32372_Snr1_F"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 0, 50, 50),
+         nrow = 2,
+         dimnames = list(Line = c("Control","34351_M"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 0, 50, 50),
+         nrow = 2,
+         dimnames = list(Line = c("Control","34351_F"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+tapping<-
+  matrix(c(0, 6, 50,44),
+         nrow = 2,
+         dimnames = list(Line = c("Control","35211_M"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 2, 50, 48),
+         nrow = 2,
+         dimnames = list(Line = c("Control","35211_F"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 9, 50, 41),
+         nrow = 2,
+         dimnames = list(Line = c("Control","35447_M"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 2, 50, 48),
+         nrow = 2,
+         dimnames = list(Line = c("Control","35447_F"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 12, 50, 38),
+         nrow = 2,
+         dimnames = list(Line = c("Control","36786_M"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 5, 50, 45),
+         nrow = 2,
+         dimnames = list(Line = c("Control","36786_F"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 0, 50, 50),
+         nrow = 2,
+         dimnames = list(Line = c("Control","60017_M"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+tapping<-
+  matrix(c(0, 1, 50, 49),
+         nrow = 2,
+         dimnames = list(Line = c("Control","60017_F"), Tap = c("Yes", "No")))
+fisher.test(tapping)
+
+
+
+
+# Levene's and Brown-Forsythe tests of unequal variances - brain morphometry data
+
+# SET WORKING DIRECTORY AND LOAD LIBRARIES INTO MEMORIES --------------
+workdir = "path/to/file"
+setwd(workdir)
+
+library(car)
+
+# IMPORT DATAFRAMES   --------------------------------------------------
+  #alpha and beta lobe data - averaged across both lobes for a given pair within a brain, unless one lobe is missing, in which case the length of the larger lobe
+  #missing both of a pair, then no data are present 
+df_ab<-read.csv('norm_brain_lengths.csv', header=TRUE)
+  #ellipsoid length and height
+df_ellip<-read.csv('norm_brain_lengths.csv', header=TRUE)
+
+
+# LEVENE TESTS ALPHA BETA LOBES ------------------------------------------------
+
+line_list <- sort(unique(df_ab$line))
+  #take out the TRiPsc (control) from the list of lines to compare to TRiPsc (control)
+line_list <- line_list[-(length(line_list))]
+
+lobe_list <- unique(df_ab$lobe)
+
+sex_list<- unique(df_ab$sex)
+
+
+#Global across lines, sexes and lobes separately
+
+for (lobe in lobe_list){
+  
+  for (sex in sex_list){
+    
+    a<- leveneTest(df_ab[which(df_ab$lobe== lobe & df_ab$sex== sex),'avg_norm_length'], 
+                    df_ab[which(df_ab$lobe== lobe & df_ab$sex == sex),'line'], center = 'mean')
+    print(lobe)
+    print(sex)
+    print(a)
+  }  }  
+
+# Fully reduced (sexes separately, for each lobe, for one line vs control) 
+
+for (line in line_list){
+  
+  for (lobe in lobe_list){
+     
+    for (sex in sex_list){
+      
+      a<- leveneTest(df_ab[which((df_ab$line=='TRiPsc'|df_ab$line==line) & df_ab$lobe== lobe & df_ab$sex== sex),'avg_norm_length'], 
+                      df_ab[which((df_ab$line=='TRiPsc'|df_ab$line==line)& df_ab$lobe== lobe & df_ab$sex == sex),'line'], center = 'mean')
+      print(line)
+      print(lobe)
+      print(sex)
+       print(a)
+    }  }  }
+
+#################################### Brown forsythe-tests #####
+
+
+#Global across lines, sexes and lobes separately
+
+for (lobe in lobe_list){
+  
+  for (sex in sex_list){
+    
+    a<- leveneTest(df_ab[which(df_ab$lobe== lobe & df_ab$sex== sex),'avg_norm_length'], 
+                   df_ab[which(df_ab$lobe== lobe & df_ab$sex == sex),'line'], center = 'median')
+    print(lobe)
+    print(sex)
+    print(a)
+  }  }  
+
+# Fully reduced (sexes separately, for each lobe, for one line vs control) 
+
+for (line in line_list){
+  
+  for (lobe in lobe_list){
+    
+    for (sex in sex_list){
+      
+      a<- leveneTest(df_ab[which((df_ab$line=='TRiPsc'|df_ab$line==line) & df_ab$lobe== lobe & df_ab$sex== sex),'avg_norm_length'], 
+                      df_ab[which((df_ab$line=='TRiPsc'|df_ab$line==line)& df_ab$lobe== lobe & df_ab$sex == sex),'line'], center = 'median')
+      print(line)
+      print(lobe)
+      print(sex)
+      print(a)
+    }  }  }
+
+
+### LEVENE/Brown Forsythe TEST ELLIPSOID BODY   ---------------------------------------
+
+
+line_list <- sort(unique(df_ellip$line))
+#take out the TRiPsc (control) from the list of lines to compare to TRiPsc (control)
+line_list <- line_list[-(length(line_list))]
+
+lobe_list <- unique(df_ellip$lobe)
+
+sex_list<- unique(df_ellip$sex)
+
+
+#Global across lines, sexes and lobes separately
+
+for (lobe in lobe_list){
+  
+  for (sex in sex_list){
+    
+    a<- leveneTest(df_ellip[which(df_ellip$lobe== lobe & df_ellip$sex== sex),'norm_length'], 
+                   df_ellip[which(df_ellip$lobe== lobe & df_ellip$sex == sex),'line'], center = 'mean')
+    print(lobe)
+    print(sex)
+    print(a)
+  }  }  
+
+# Fully reduced (sexes separately, for each lobe, for one line vs control)
+
+for (line in line_list){
+  
+  for (lobe in lobe_list){
+    
+    for (sex in sex_list){
+      
+      a<- leveneTest(df_ellip[which((df_ellip$line=='TRiPsc'|df_ellip$line==line) & df_ellip$lobe== lobe & df_ellip$sex== sex),'norm_length'], 
+                     df_ellip[which((df_ellip$line=='TRiPsc'|df_ellip$line==line)& df_ellip$lobe== lobe & df_ellip$sex == sex),'line'], center = 'mean')
+      print(line)
+      print(lobe)
+      print(sex)
+      print(a)
+    }  }  }
+
+
+### Brown-Forsythe tests #######
+#Global across lines, sexes and lobes separately
+
+for (lobe in lobe_list){
+  
+  for (sex in sex_list){
+    
+    a<- leveneTest(df_ellip[which(df_ellip$lobe== lobe & df_ellip$sex== sex),'norm_length'], 
+                    df_ellip[which(df_ellip$lobe== lobe & df_ellip$sex == sex),'line'], center = 'median')
+    print(lobe)
+    print(sex)
+    print(a)
+  }  }  
+
+# Fully reduced (sexes separately, for each lobe, for one line vs control)
+
+for (line in line_list){
+  
+  for (lobe in lobe_list){
+    
+    for (sex in sex_list){
+      
+      a<- leveneTest(df_ellip[which((df_ellip$line=='TRiPsc'|df_ellip$line==line) & df_ellip$lobe== lobe & df_ellip$sex== sex),'norm_length'], 
+                      df_ellip[which((df_ellip$line=='TRiPsc'|df_ellip$line==line)& df_ellip$lobe== lobe & df_ellip$sex == sex),'line'],center = 'median')
+      print(line)
+      print(lobe)
+      print(sex)
+      print(a)
+    }  }  }
+	
+	
+	
+	
+	
+	
+	
+####################################################################
+############### GROSS MUSHROOM BODY ABNORMALITIES ##################
+####################################################################
+# DESCRIPTION: This script creates matrices representing the counts of brains
+# with various morphological changes as a result of knockdown of CSS-associated genes.
+# Uses Fishers Exact test to see if the counts of these changes are significantly different from the control.
+# If no abnormal brains in that category were observed, then the Fisher's exact test code is not included here; the p-value is 1.000.
+
+######			Missing Alpha Lobe -------------------------------------
+
+brains<- #34351 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 females
+  matrix(c(20, 17, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #60017 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+######			Skinny Alpha Lobe -------------------------------------
+
+brains<- #34351 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #34351 females
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #32372 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35211 males
+  matrix(c(20, 18, 0, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35211 females
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 females
+  matrix(c(20, 16, 0, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+######			Impaired Alpha Lobe Outgrowth -------------------------------------
+
+brains<- #34351 females
+  matrix(c(19, 18, 1, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #32372 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 males
+  matrix(c(20, 6, 0, 14),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 females
+  matrix(c(19, 9, 1, 9),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #36786 females
+  matrix(c(19, 18, 1, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+
+######			Extra Projections Alpha Lobe -------------------------------------
+
+brains<- #34351 females
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #32372 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #32372 females
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 females
+  matrix(c(20, 17, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #36786 males
+  matrix(c(20, 18, 0, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #60017 females
+  matrix(c(20, 16, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+######			Missing Beta Lobe -------------------------------------
+
+brains<- #36786 females
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+######			Skinny Beta Lobe -------------------------------------
+
+brains<- #34351 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #34351 females
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+######			Beta Lobe - Midline Defects -------------------------------------
+
+
+brains<- #34351 males
+  matrix(c(20, 16, 0, 4),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #34351 females
+  matrix(c(19, 18, 1, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35211 females
+  matrix(c(19, 18, 1, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+brains<- #35211 males
+  matrix(c(20, 18, 0, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 males
+  matrix(c(20, 15, 0, 5),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 females
+  matrix(c(19, 15, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #36786 males
+  matrix(c(20, 16, 0, 4),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #36786 females
+  matrix(c(19, 19, 1, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+######			Extra Projections - Beta Lobe -------------------------------------
+
+brains<- #35447 males
+  matrix(c(20, 17, 0, 3),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+######			Total Number of Abnormal Brains -------------------------------------
+
+brains<- #35447 males
+  matrix(c(20, 15, 0, 5),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 females
+  matrix(c(18, 16, 2, 4),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #32372 males
+  matrix(c(20, 18, 0, 2),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #32372 females
+  matrix(c(18, 19, 2, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35211 males
+  matrix(c(20, 16, 0, 4),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35211 females
+  matrix(c(18, 17, 2, 3),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 males
+  matrix(c(20, 1, 0, 19),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #35447 females
+  matrix(c(18, 7, 2, 11),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #36786 males
+  matrix(c(20, 14, 0, 6),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #36786 females
+  matrix(c(18, 16, 2, 4),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #60017 males
+  matrix(c(20, 19, 0, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+brains<- #60017 females
+  matrix(c(18, 16, 2, 1),
+         nrow = 2,
+         dimnames = list(Line = c("Control","Exper.Line"), morph = c("normal", "abnormal")))
+brains
+fisher.test(brains)
+
+
+
+
+
+
+
+

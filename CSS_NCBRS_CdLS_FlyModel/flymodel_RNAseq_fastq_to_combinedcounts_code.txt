@@ -1,0 +1,425 @@
+
+
+################################################################
+
+# Code by: Vijay Shankar Copyright 2020
+# Initial publication date: 02/10/2020
+# Edited/formatted by: Maria E. Adonay for clarity/readability
+# Last edited: 02/20/2020
+
+################################################################
+### INSTRUCTIONS ###############################################
+################################################################
+#
+##########Instructions for beginners: Things you need to modify in this code:
+# 1.The text after the = in the header section i.e. the beginning of the code..
+#      jobname... your choice
+#      output... change folder to your data/username/log folder. Use mkdir to make a
+#      log folder beforehand
+#
+# 2. Its best to use TextWrangler to edit this code- you can see everything color coded
+#    if you save the file as .sh
+#
+# 3. Then go to the export RAW_dir shown in multicolor. RAW_dir implies the input folder
+#    containing the FASTQ files. Put in the filepath as needed.
+#    You dont need to mkdir the WORD_dir
+#
+# 4. Dont touch anything else in this code.
+#
+# 5. After you login to secretariat go to your data/username folder and type
+#    nano RNASeqTemplate.sh
+#
+# 6. In the nano part copy paste the entire text of this script Command+A Cmd+C Cmd=V;
+#    then Exit by Ctrl+X
+#
+# 7. After exiting type sbatch RNASeqTemplate.sh and hit Enter. The script should start running.
+#    Check progress using squeue
+#
+# 1. Copy this template to your project directory
+#
+#       Here is an example command:
+#       cp /opt/ohpc/pub/scripts/script.sh /data/sneha/
+#
+#       Where "username" is replaced with your username
+#
+#       Note: Do not make your project directory in your /home
+#       directory -- instead, make it in your /data directory
+#
+#       If you do not have a folder in the /data directory,
+#       execute the following commands:
+#       cd /data
+#       mkdir smokash
+#
+# 2. Change the following SBATCH parameters for your project
+#
+#       --job-name      : Name your job
+#       --nodelist      : Pick compute node between 001-004
+#       --output        : Specify path for output file
+#       --error         : Specify path for error file
+#       --mail-user     : List your email address for updates
+#
+#       Note: Change these parameters in the #SBATCH header,
+#       above; Only edit content after the "=" symbol
+#
+#       For --output, here is an example path:
+#       /data/username/rnaseq_analysis/output_%j.txt
+#
+#       Do not delete the "%j" -- this will attach the job
+#       number to your files; Slurm assigns this number once
+#       you submit your script
+#
+# 3. Set the following as your project-specific directories
+#
+
+#export RAW_DIR="/data/Palmetto_sync/Novaseq/FASTQ/RAM_CSS_4_16_20"
+export WORK_DIR="/data/rajones/RAM_RNAseq_CSS_compiled"
+#
+#       Note: Leave the quotations around the directories; Do
+#       not place a '/' at the end of the directories
+#
+# 4. Decide if you would like to remove intermediate files
+#
+export RM_DIR="T"
+#
+#       Note: Please set as either a capital "T" or "F"; Leave
+#       the quotations around the "T" or "F"
+#
+#       When this variable is set to "T", the intermediate BAM
+#       and SAM files will be removed upon successful creation
+#       of a non-empty combined_counts.txt file; When the
+#       variable is not set to "T", all of the intermediate
+#       files will be retained
+#
+#       It is useful to retain these files (RM_DIR="F") if the
+#       script does not complete correctly: They may be useful
+#       for troubleshooting
+#
+# 5. Run the script from the command line
+#
+#       Example command: sbatch script.sh
+
+################################################################
+### MAIN SCRIPT ################################################
+################################################################
+
+# Directory prep
+#mkdir ${WORK_DIR}
+#cd ${RAW_DIR}
+
+# Variable prep + formatting
+export PAD_HASH=$(head -c 50 /dev/zero | tr '\0' '#')
+export PAD_DASH=$(head -c 50 /dev/zero | tr '\0' '-')
+export INDENT=5
+
+# Output title
+printf "\n%s%s\n" "#" ${PAD_HASH}; txt="RNA-SEQ PIPELINE || BY: VIJAY SHANKAR"; printf "%s %s" "$txt" "${PAD_HASH:${#txt}}"; printf "\n%s%s\n" "#" ${PAD_HASH}
+
+# Progress report + start global timer
+now=$(date); printf "\n%s%s\n" "#" ${PAD_HASH}; txt="INITAL Start: ${now}"; printf "%s %s" "$txt" "${PAD_HASH:${#txt}}"; printf "\n%s%s\n" "#" ${PAD_HASH}
+
+################################################################
+### Merge lanes #
+### ########### #
+
+# Progress report + start timer
+#printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 0/9: Merging lanes."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+#now=$(date); printf "%${INDENT}s%s\n\n" '' "+ Start: $now"
+
+# Script
+#/opt/ohpc/pub/Software/merge_lanes.sh \
+#-o ${WORK_DIR}/0_lane_merged/
+
+# Stop timer
+#now=$(date); printf "\n%${INDENT}s%s\n" '' "+ End: $now"
+#printf "%${INDENT}s%s\n" '' "+ Done merging lanes."
+
+# Software / directory prep
+module load afterqc/0.9.7
+cd ${WORK_DIR}/0_lane_merged
+
+################################################################
+### QC #
+### ## #
+
+# Progress report + start timer + directory prep
+printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 1/9: Performing QC processing."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+now=$(date); printf "%${INDENT}s%s\n\n" '' "+ Start: $now"
+mkdir ${WORK_DIR}/1_afterqc
+
+# AfterQC
+after.py \
+-g ${WORK_DIR}/1_afterqc/pass \
+-b ${WORK_DIR}/1_afterqc/fail \
+-r ${WORK_DIR}/1_afterqc/QC
+
+# Software prep + stop timer
+module unload afterqc/0.9.7
+now=$(date); printf "\n%${INDENT}s%s\n" '' "+ End: $now"
+printf "%${INDENT}s%s\n" '' "+ Done performing QC processing."
+
+################################################################
+### Filter for rRNA #
+### ############### #
+
+# Progress report + start timer + software / directory prep
+printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 2/9: Filtering for rRNA."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+now=$(date); printf "%${INDENT}s%s\n\n" '' "+ Start: $now"
+module load java_jdk/1.8.231
+module load bbmap/38.73
+cd ${WORK_DIR}/1_afterqc/pass
+
+####################################
+# Note: ONLY FOR FORWARD FRAGMENTS #
+#                                  #
+# This is just to get some         #
+# statistics on depletion. The     #
+# multimapping rRNA  fragments are #
+# not used for gene count          #
+# calculation to begin with in     #
+# featurecounts.                   #
+####################################
+
+for f in *_R1_001.good.fq.gz;
+do
+        # BBDuk
+        bbduk.sh \
+        in=$f \
+        outm=$f.rRNA.fq \
+        outu=$f.nonrRNA.fq \
+        k=31 \
+        ref=/opt/ohpc/pub/Databases/rRNA_SILVA/ribokmers.fa ;
+done;
+
+# Software prep + stop timer
+module unload java_jdk/1.8.231
+module unload bbmap/38.73
+now=$(date); printf "\n%${INDENT}s%s\n" '' "+ End: $now"
+printf "%${INDENT}s%s\n" '' "+ Done filtering for rRNA."
+
+################################################################
+### Align #
+### ##### #
+
+# Progress report + start timer + software / directory prep
+printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 3/9: Aligning using GMAP-GSNAP."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+now=$(date); printf "%${INDENT}s%s\n\n" '' "+ Start: $now"
+module load samtools/1.10
+module load gmap_gsnap/2019.09.12
+mkdir ${WORK_DIR}/2_gsnap
+mkdir ${WORK_DIR}/2_gsnap/SAM
+mkdir ${WORK_DIR}/2_gsnap/BAM
+mkdir ${WORK_DIR}/2_gsnap/SORTED_BAM
+
+for f in *_R1_001.good.fq.gz;
+do
+        # Create R2 filename
+        R2="$(echo $f | sed -e 's/R1/R2/')" ;
+
+        # Create SAM filename
+        SAM_NAME="$(echo $f | sed -e 's/_R1_001.good.fq.gz/.sam/')" ;
+
+        # GSnap
+        gsnap \
+        --gunzip \
+        -D /opt/ohpc/pub/Databases/D_mel/D_mel_6.13_NCBI/indexed/gmap_gsnap/ \
+        -d D_mel_6.13 \
+        $f \
+        $R2 \
+        -t 40 \
+        -N 1 \
+        --orientation=RF \
+        -A sam \
+        -o ${WORK_DIR}/2_gsnap/SAM/$SAM_NAME ;
+done;
+
+# Software prep + stop timer
+module unload samtools/1.10
+module unload gmap_gsnap/2019.09.12
+now=$(date); printf "\n%${INDENT}s%s\n" '' "+ End: $now"
+printf "%${INDENT}s%s\n" '' "+ Done aligning using GMAP-GSNAP."
+
+################################################################
+### SAM --> BAM #
+### ########### #
+
+# Progress report + start timer + software / directory prep
+printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 4/9: Converting SAM to BAM."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+now=$(date); printf "%${INDENT}s%s\n" '' "+ Start: $now"
+module load samtools/1.10
+cd /${WORK_DIR}/2_gsnap/SAM
+
+for f in *.sam;
+do
+        # Create BAM filename
+        BAM_NAME="$(echo $f |sed -e 's/sam/bam/')" ;
+
+        # Samtools : VIEW
+        samtools view \
+        -Sb \
+        $f \
+        > ${WORK_DIR}/2_gsnap/BAM/$BAM_NAME ;
+done;
+
+# Software prep + progress report + stop timer
+module unload samtools/1.10
+now=$(date); printf "%${INDENT}s%s\n" '' "+ End: $now"
+printf "%${INDENT}s%s\n" '' "+ Done converting SAM to BAM."
+
+################################################################
+### Sort BAM #
+### ######## #
+
+# Progress report + start timer + software / directory prep
+printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 5/9: Sorting BAM."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+now=$(date); printf "%${INDENT}s%s\n\n" '' "+ Start: $now"
+module load samtools/1.10
+cd ${WORK_DIR}/2_gsnap/BAM
+
+for f in *.bam;
+do
+        # Create sorted BAM filename
+        SORTED_NAME="$(echo $f |sed -e 's/.bam/_sorted.bam/')" ;
+
+        # Samtools : SORT
+        samtools sort \
+        -o ${WORK_DIR}/2_gsnap/SORTED_BAM/$SORTED_NAME \
+        -@ 40 \
+        $f ;
+
+done;
+
+# Software prep + progress report + stop timer
+module unload samtools/1.10
+now=$(date); printf "\n%${INDENT}s%s\n" '' "+ End: $now"
+printf "%${INDENT}s%s\n" '' "+ Done sorting BAM."
+
+################################################################
+### Index sorted BAM #
+### ################ #
+
+# Progress report + start timer + software / directory prep
+printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 6/9: Indexing sorted BAM."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+now=$(date); printf "%${INDENT}s%s\n" '' "+ Start: $now"
+module load samtools/1.10
+cd ${WORK_DIR}/2_gsnap/SORTED_BAM
+
+for f in *_sorted.bam;
+do
+        # Samtools : INDEX
+        samtools index \
+        $f ;
+done;
+
+# Software prep + progress report + stop timer
+module unload samtools/1.10
+now=$(date); printf "%${INDENT}s%s\n" '' "+ End: $now"
+printf "%${INDENT}s%s\n" '' "+ Done indexing sorted BAM."
+
+################################################################
+### Count reads to exons #
+### #################### #
+
+# Progress report + start timer + software / directory prep
+printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 7/9: Running featureCounts."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+now=$(date); printf "%${INDENT}s%s\n\n" '' "+ Start: $now"
+module load subread/1.6.4
+mkdir ${WORK_DIR}/3_featurecounts
+
+for f in *_sorted.bam;
+do
+        # featureCounts
+        featureCounts \
+        -a /opt/ohpc/pub/Databases/D_mel/D_mel_6.13_NCBI/indexed/gmap_gsnap/D_mel_6.13/dmel-all-r6.13.gtf \
+        -t exon \
+        -F GTF \
+        -g gene_id \
+        -T 40 \
+        -s 0 \
+        -p \
+        -D 1200 \
+        -o ${WORK_DIR}/3_featurecounts/$f.counts.txt \
+        $f ;
+done;
+
+# Software prep + progress report + stop timer
+module unload subread/1.6.4
+now=$(date); printf "\n%${INDENT}s%s\n" '' "+ End: $now"
+printf "%${INDENT}s%s\n" '' "+ Done running featureCounts."
+
+################################################################
+### Combine counts from multiple files into a cumulative file #
+### ######################################################### #
+
+# Progress report + start timer
+printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 8/9: Formatting files."; printf "%s %s\n\n" "$txt" "${PAD_DASH:${#txt}}"
+now=$(date); printf "%${INDENT}s%s\n" '' "+ Start: $now"
+
+# Directory prep; create file
+cd ${WORK_DIR}/3_featurecounts
+touch combined_counts.txt
+
+# Select a random file to extract first two metadata columns
+RAND_FILE=$(find . -type f -name "*.txt" | shuf -n 1)
+awk '{print $1 "\t" $6}' $RAND_FILE > combined_counts.txt
+
+for f in *.counts.txt;
+do
+        # Extract column and paste
+        awk '{print $7}' $f | paste combined_counts.txt - > test.txt ;
+        mv test.txt combined_counts.txt ;
+done;
+
+################################################################
+### Format cumulative file #
+### ###################### #
+
+# Remove first row - featureCount command call
+tail -n +2 combined_counts.txt > combined_counts_alt.txt
+
+# Remove temp file
+mv combined_counts_alt.txt combined_counts.txt
+
+# Stop timer
+now=$(date); printf "%${INDENT}s%s\n" '' "+ End: $now"
+printf "%${INDENT}s%s\n" '' "+ Done formatting files."
+
+################################################################
+### OPTIONAL: Clean up intermediate files #
+### ##################################### #
+
+# Wait until all previous processes have completed
+wait
+
+if [ ${RM_DIR} == "T" ];
+then
+        # Check if combined_counts.txt exists and is not empty
+        [ -s ${WORK_DIR}/3_featurecounts/combined_counts.txt ]
+
+        # $? expands to the exit status of the most recently executed foreground pipeline
+        if [ $? == 0 ];
+        then
+                # Progress report
+                printf "\n%s%s\n" "-" ${PAD_DASH}; txt="--- Step 9/9: Remove intermediate files."; printf "%s %s\n" "$txt" "${PAD_DASH:${#txt}}"
+        printf "%${INDENT}s%s\n" '' '' "  combined_counts.txt exists."
+                now=$(date); printf "%${INDENT}s%s\n" '' "+ Start: $now"
+
+                # Remove SAM files
+                printf "%${INDENT}s%${INDENT}s%s\n" '' '' "* Removing intermediate SAM files."
+                rm -rf ${WORK_DIR}/2_gsnap/SAM/
+
+                # Remove BAM files
+                printf "%${INDENT}s%${INDENT}s%s\n" '' '' "* Removing intermediate BAM files."
+                rm -rf ${WORK_DIR}/2_gsnap/BAM/
+
+                # Stop timer + progress report
+                now=$(date); printf "%${INDENT}s%s\n" '' "+ End: $now"
+                printf "%${INDENT}s%s\n" '' "+ Done removing intermediate files; Continue to R section."
+        else
+                printf "\n%s\n" "Either combined_counts.txt does not exist or is empty."
+        fi;
+else
+        printf "\n%s\n" "Retaining intermediate files; Continue to R section."
+fi;
+
+# Stop global timer
+printf "\n%s%s\n" "#" ${PAD_HASH}; now=$(date); txt="FINAL End: ${now}"; printf "%s %s\n" "$txt" "${PAD_HASH:${#txt}}"; printf "%s%s\n\n" "#" ${PAD_HASH}
