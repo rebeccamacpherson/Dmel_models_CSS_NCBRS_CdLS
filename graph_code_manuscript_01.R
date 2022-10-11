@@ -575,6 +575,7 @@ gene1<-gene
 
 creg_star<-ggplot(data=gene1[which(gene1$Assay == "coreg_startle"),], aes(x=Gene, y=Mean, fill=Sex)) + 
   geom_col(position = position_dodge(width=0.7), width=0.7, color='black', size=0.5)+
+  geom_errorbar(aes(ymin=Mean-SED, ymax=Mean+SED), width=0.2, position=position_dodge(0.7))+
   labs(y="Average Time (s)\n(Experimental - Control)")+
   #scale_y_discrete(limit = c())+
   geom_hline(yintercept = 0, color = "black")+
@@ -598,6 +599,7 @@ creg_tap<-ggplot(data=gene1[which(gene1$Assay == "coreg_tapping"),], aes(x=Gene,
 
 creg_ns<-ggplot(data=gene1[which(gene1$Assay == "coreg_ns"),], aes(x=Gene, y=Mean, fill=Sex)) + 
   geom_col(position = position_dodge(width=0.7), width=0.7, color='black', size=0.5)+
+  geom_errorbar(aes(ymin=Mean-SED, ymax=Mean+SED), width=0.2, position=position_dodge(0.7))+
   labs(y="Proportion of Time\nAsleep, Night\n(Experimental - Control)")+
   #scale_y_discrete(limit = c())+
   geom_hline(yintercept = 0, color = "black")+
@@ -608,6 +610,7 @@ creg_ns<-ggplot(data=gene1[which(gene1$Assay == "coreg_ns"),], aes(x=Gene, y=Mea
 
 creg_act<-ggplot(data=gene1[which(gene1$Assay == "coreg_act"),], aes(x=Gene, y=Mean, fill=Sex)) + 
   geom_col(position = position_dodge(width=0.7), width=0.7, color='black', size=0.5)+
+  geom_errorbar(aes(ymin=Mean-SED, ymax=Mean+SED), width=0.2, position=position_dodge(0.7))+
   labs(y="Total Activity\n(counts)\n(Experimental - Control)")+
   #scale_y_discrete(limit = c())+
   geom_hline(yintercept = 0, color = "black")+
