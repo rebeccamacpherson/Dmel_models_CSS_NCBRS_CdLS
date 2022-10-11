@@ -1569,5 +1569,198 @@ fisher.test(tapping)
 
 
 
+###### Calculate standard error of the difference based on Error propagation
 
+setwd("set\\wd")
+
+df<-read.csv('coreg.csv')
+
+
+#control1
+glist1<-c("56014","55690","64498")
+glist2<-c("62872","66945","80387")
+
+l<-NULL
+s<-NULL
+
+for (i in 1:length(glist1)) {
+
+dfa<-df[df$Line== glist1[i]  & df$Sex=="M",4]
+dfb<-df[df$Line=="TRIPsc1" & df$Sex=="M",4]
+
+diff1=dfa-mean(dfa)
+diff2=dfb-mean(dfb)
+SE1 = sqrt(sum(diff1^2)/length(dfa))/sqrt(length(dfa)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+SE2 = sqrt(sum(diff2^2)/length(dfb))/sqrt(length(dfb)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+SED = sqrt(SE1^2+SE2^2)
+
+l[i]<-glist1[i]
+s[i]<-SED
+}
+
+
+#control2
+glist1<-c("56014","55690","64498")
+glist2<-c("62872","66945","80387")
+
+l<-NULL
+s<-NULL
+
+for (i in 1:length(glist2)) {
+  
+  dfa<-df[df$Line== glist2[i]  & df$Sex=="M",4]
+  dfb<-df[df$Line=="TRIPsc2" & df$Sex=="M",4]
+  
+  diff1=dfa-mean(dfa)
+  diff2=dfb-mean(dfb)
+  SE1 = sqrt(sum(diff1^2)/length(dfa))/sqrt(length(dfa)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SE2 = sqrt(sum(diff2^2)/length(dfb))/sqrt(length(dfb)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SED = sqrt(SE1^2+SE2^2)
+  
+  l[i]<-glist2[i]
+  s[i]<-SED
+}
+
+#control1 - females
+glist1<-c("56014","55690","64498")
+glist2<-c("62872","66945","80387")
+
+l<-NULL
+s<-NULL
+
+for (i in 1:length(glist1)) {
+  
+  dfa<-df[df$Line== glist1[i]  & df$Sex=="F",4]
+  dfb<-df[df$Line=="TRIPsc1" & df$Sex=="F",4]
+  
+  diff1=dfa-mean(dfa)
+  diff2=dfb-mean(dfb)
+  SE1 = sqrt(sum(diff1^2)/length(dfa))/sqrt(length(dfa)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SE2 = sqrt(sum(diff2^2)/length(dfb))/sqrt(length(dfb)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SED = sqrt(SE1^2+SE2^2)
+  
+  l[i]<-glist1[i]
+  s[i]<-SED
+}
+
+
+#control2 - females
+glist1<-c("56014","55690","64498")
+glist2<-c("62872","66945","80387")
+
+l<-NULL
+s<-NULL
+
+for (i in 1:length(glist2)) {
+  
+  dfa<-df[df$Line== glist2[i]  & df$Sex=="F",4]
+  dfb<-df[df$Line=="TRIPsc2" & df$Sex=="F",4]
+  
+  diff1=dfa-mean(dfa)
+  diff2=dfb-mean(dfb)
+  SE1 = sqrt(sum(diff1^2)/length(dfa))/sqrt(length(dfa)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SE2 = sqrt(sum(diff2^2)/length(dfb))/sqrt(length(dfb)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SED = sqrt(SE1^2+SE2^2)
+  
+  l[i]<-glist2[i]
+  s[i]<-SED
+}
+
+###Sleep and Activity Phenotypes
+
+###Activity
+setwd("G:\\My Drive\\Research\\CS_BB\\CoReg_Genes_KD\\DAM\\For_SAS")
+
+df<-read.csv('Ind_daily_locomotor_activity_data_nodead_compiled.csv')
+
+
+#control - females
+glist<-c("56014","55690","64498","62872","66945","80387")
+
+l<-NULL
+s<-NULL
+
+for (i in 1:length(glist)) {
+  
+  dfa<-df[df$Line== glist[i]  & df$Sex=="F",5]
+  dfb<-df[df$Line=="TRiPsc" & df$Sex=="F",5]
+  
+  diff1=dfa-mean(dfa)
+  diff2=dfb-mean(dfb)
+  SE1 = sqrt(sum(diff1^2)/length(dfa))/sqrt(length(dfa)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SE2 = sqrt(sum(diff2^2)/length(dfb))/sqrt(length(dfb)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SED = sqrt(SE1^2+SE2^2)
+  
+  l[i]<-glist[i]
+  s[i]<-SED
+}
+
+#control - males
+glist<-c("56014","55690","64498","62872","66945","80387")
+
+l<-NULL
+s<-NULL
+
+for (i in 1:length(glist)) {
+  
+  dfa<-df[df$Line== glist[i]  & df$Sex=="M",5]
+  dfb<-df[df$Line=="TRiPsc" & df$Sex=="M",5]
+  
+  diff1=dfa-mean(dfa)
+  diff2=dfb-mean(dfb)
+  SE1 = sqrt(sum(diff1^2)/length(dfa))/sqrt(length(dfa)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SE2 = sqrt(sum(diff2^2)/length(dfb))/sqrt(length(dfb)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SED = sqrt(SE1^2+SE2^2)
+  
+  l[i]<-glist[i]
+  s[i]<-SED
+}
+
+###NS
+setwd("G:\\My Drive\\Research\\CS_BB\\CoReg_Genes_KD\\DAM\\For_SAS")
+
+df<-read.csv('Ind_night_sleep_nodead.csv')
+
+
+#control - females
+glist<-c("56014","55690","64498","62872","66945","80387")
+
+l<-NULL
+s<-NULL
+
+for (i in 1:length(glist)) {
+  
+  dfa<-df[df$Line== glist[i]  & df$Sex=="F",7]
+  dfb<-df[df$Line=="TRiPsc" & df$Sex=="F",7]
+  
+  diff1=dfa-mean(dfa)
+  diff2=dfb-mean(dfb)
+  SE1 = sqrt(sum(diff1^2)/length(dfa))/sqrt(length(dfa)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SE2 = sqrt(sum(diff2^2)/length(dfb))/sqrt(length(dfb)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SED = sqrt(SE1^2+SE2^2)
+  
+  l[i]<-glist[i]
+  s[i]<-SED
+}
+
+#control - males
+glist<-c("56014","55690","64498","62872","66945","80387")
+
+l<-NULL
+s<-NULL
+
+for (i in 1:length(glist)) {
+  
+  dfa<-df[df$Line== glist[i]  & df$Sex=="M",7]
+  dfb<-df[df$Line=="TRiPsc" & df$Sex=="M",7]
+  
+  diff1=dfa-mean(dfa)
+  diff2=dfb-mean(dfb)
+  SE1 = sqrt(sum(diff1^2)/length(dfa))/sqrt(length(dfa)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SE2 = sqrt(sum(diff2^2)/length(dfb))/sqrt(length(dfb)) #bolded part is Standard Deviation and SE is simply SD/sqrt(N)
+  SED = sqrt(SE1^2+SE2^2)
+  
+  l[i]<-glist[i]
+  s[i]<-SED
+}
 
