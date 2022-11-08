@@ -1,4 +1,4 @@
-README.txt for MacPherson, R.A. et al., "Genetic and Genomic Analyses of Drosophila melanogaster Models of Rare Human Diseases"
+README.txt for MacPherson, R.A. et al., "Genetic and Genomic Analyses of Drosophila melanogaster Models of Chromatin Modification Disorders"
 Relevant GEO Accession number: GSE213763
 
 Directory: Coregualted_Genes/sleep_activity_raw
